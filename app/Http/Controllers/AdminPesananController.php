@@ -20,7 +20,8 @@ class AdminPesananController extends Controller
     public function updateStatus(Request $request, $pesanan_id)
     {
         $request->validate([
-            'status_pesanan' => 'required|in:Menunggu Pembayaran,Pembayaran Dikirim,Diproses,Selesai,Dibatalkan'
+            // Sesuaikan opsi di bawah ini dengan isi ENUM database Anda
+            'status_pesanan' => 'required|in:Menunggu Pembayaran,Pembayaran Dikirim,Pesanan Diproses,Pesanan Selesai,Dibatalkan'
         ]);
 
         $pesanan = PesananCustom::findOrFail($pesanan_id);

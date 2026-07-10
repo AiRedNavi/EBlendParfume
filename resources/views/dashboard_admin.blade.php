@@ -91,8 +91,8 @@
                                             <select name="status_pesanan" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg p-2 focus:ring-pink focus:border-pink">
                                                 <option value="Menunggu Pembayaran" {{ $pesanan->status_pesanan == 'Menunggu Pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
                                                 <option value="Pembayaran Dikirim" {{ $pesanan->status_pesanan == 'Pembayaran Dikirim' ? 'selected' : '' }}>Pembayaran Dikirim</option>
-                                                <option value="Diproses" {{ $pesanan->status_pesanan == 'Diproses' ? 'selected' : '' }}>Diproses (Racik)</option>
-                                                <option value="Selesai" {{ $pesanan->status_pesanan == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                                <option value="Pesanan Diproses" {{ $pesanan->status_pesanan == 'Pesanan Diproses' ? 'selected' : '' }}>Diproses (Racik)</option>
+                                                <option value="Pesanan Selesai" {{ $pesanan->status_pesanan == 'Pesanan Selesai' ? 'selected' : '' }}>Selesai</option>
                                                 <option value="Dibatalkan" {{ $pesanan->status_pesanan == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                                             </select>
                                             <button type="submit" class="bg-gray-800 hover:bg-black text-white font-bold text-xs py-2 px-3 rounded-lg transition shadow-sm">
