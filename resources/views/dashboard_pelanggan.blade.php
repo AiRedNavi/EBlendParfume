@@ -70,24 +70,77 @@
         </div>
 
         <div class="bg-white rounded-2xl border-4 border-pink shadow-xl overflow-hidden">
-            <div class="px-8 py-5 border-b-2 border-pink bg-gray-50">
+            <div class="px-8 py-5 border-b-2 border-pink bg-gray-50 flex justify-between items-center">
                 <h4 class="text-black font-extrabold text-lg tracking-tight">
                     Riwayat Pesanan Racikan Parfum
                 </h4>
+                <span class="text-xs font-mono px-3 py-1 bg-gray-200 text-gray-700 rounded-full font-bold">
+                    Total: {{ $pesanan_user->count() }} Pesanan
+                </span>
             </div>
             
-            <div class="p-12">
-                <div class="text-center max-w-sm mx-auto py-4">
-                    <div class="w-20 h-28 bg-[#FCF3EE] rounded-xl border-2 border-purple mx-auto mb-6 flex flex-col items-center justify-center p-3 shadow-inner">
-                        <span class="text-[8px] font-mono tracking-widest text-gray-400 mb-1">E-BLEND</span>
-                        <div class="w-8 h-0.5 bg-[#FF6B86]"></div>
+            <div class="p-6 md:p-8">
+                @forelse($pesanan_user as $pesanan)
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 mb-4 bg-white border-2 border-gray-100 rounded-xl shadow-sm hover:border-pink/50 transition duration-150 gap-4">
+                        
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono font-bold text-gray-400 block">{{ $pesanan->pesanan_id }}</span>
+                            <h5 class="font-extrabold text-gray-800 text-base">
+                                Custom Parfum Silhouette ({{ $pesanan->ukuran_botol_ml }})
+                            </h5>
+                            <p class="text-xs text-gray-500">
+                                Dibuat pada: <span class="font-medium">{{ \Carbon\Carbon::parse($pesanan->tanggal_pesanan)->translatedFormat('d F Y') }}</span>
+                            </p>
+                            <p class="text-sm font-bold text-[#FF6B86] pt-1">
+                                Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
+                            @if($pesanan->status_pesanan === 'Menunggu Pembayaran')
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-amber-100 text-amber-700 border border-amber-300 text-center">
+                                    🔴 Menunggu Pembayaran
+                                </span>
+                                <a href="{{ route('pembayaran.index', $pesanan->pesanan_id) }}" class="inline-block text-center text-xs font-bold bg-[#FF6BD0] text-white px-4 py-2 rounded-lg shadow-sm hover:bg-[#FF6B86] transition text-nowrap">
+                                    Bayar Sekarang &rarr;
+                                </a>
+                            @elseif($pesanan->status_pesanan === 'Pembayaran Dikirim')
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-blue-100 text-blue-700 border border-blue-300 text-center">
+                                    🔵 Pesanan Dikonfirmasi
+                                </span>
+                            @elseif($pesanan->status_pesanan === 'Pesanan Diproses' || $pesanan->status_pesanan === 'Peracikan')
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-purple-100 text-purple-700 border border-purple-300 text-center">
+                                    🧪 Pesanan DiProses
+                                </span>
+                            @elseif($pesanan->status_pesanan === 'Pesanan Selesai')
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-green-100 text-green-700 border border-green-300 text-center">
+                                    🟢 Selesai / Dikirim
+                                </span>
+                            @elseif($pesanan->status_pesanan === 'Dibatalkan')
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-red-100 text-red-700 border border-red-300 text-center">
+                                    ❌ Dibatalkan
+                                </span>
+                            @else
+                                <span class="px-3 py-1 text-xs font-extrabold rounded-full bg-gray-100 text-gray-700 border border-gray-300 text-center">
+                                    {{ $pesanan->status_pesanan }}
+                                </span>
+                            @endif
+                        </div>
+
                     </div>
-                    
-                    <h5 class="text-lg font-bold text-black tracking-tight">Belum ada parfum yang Anda racik</h5>
-                    <p class="text-sm text-gray-500 mt-2 leading-relaxed">
-                        Aroma impian Anda belum terdaftar di sini. Silakan buat pesanan racikan pertama Anda terlebih dahulu.
-                    </p>
-                </div>
+                @empty
+                    <div class="text-center max-w-sm mx-auto py-12">
+                        <div class="w-20 h-28 bg-[#FCF3EE] rounded-xl border-2 border-[#FF6BD0] mx-auto mb-6 flex flex-col items-center justify-center p-3 shadow-inner">
+                            <span class="text-[8px] font-mono tracking-widest text-gray-400 mb-1">E-BLEND</span>
+                            <div class="w-8 h-0.5 bg-[#FF6B86]"></div>
+                        </div>
+                        
+                        <h5 class="text-lg font-bold text-black tracking-tight">Belum ada parfum yang Anda racik</h5>
+                        <p class="text-sm text-gray-500 mt-2 leading-relaxed">
+                            Aroma impian Anda belum terdaftar di sini. Silakan buat pesanan racikan pertama Anda terlebih dahulu.
+                        </p>
+                    </div>
+                @endforelse
             </div>
         </div>
 

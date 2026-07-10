@@ -3,13 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PesananCustom extends Model
 {
-    // Pastikan nama tabelnya sudah benar jika kamu menggunakan nama custom
-    protected $table = 'pesanan_custom'; 
+    use HasFactory;
 
-    // TAMBAHKAN BARIS INI: Mengizinkan kolom-kolom berikut diisi secara massal
+    protected $table = 'pesanan_custom';
+
+    // 1. Beritahu Laravel bahwa Primary Key Anda adalah pesanan_id, BUKAN 'id'
+    protected $primaryKey = 'pesanan_id';
+
+    // 2. Beritahu Laravel bahwa Primary Key Anda berbentuk String (INV-xxxx), BUKAN Auto-Incrementing Integer
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'pesanan_id',
         'user_id',
@@ -17,6 +25,6 @@ class PesananCustom extends Model
         'ukuran_botol_ml',
         'alkohol_ml',
         'total_harga',
-        'status_pesanan',
+        'status_pesanan'
     ];
 }

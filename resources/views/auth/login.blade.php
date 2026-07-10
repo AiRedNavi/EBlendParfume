@@ -68,9 +68,7 @@
                             <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-[#FF6B86] focus:ring-[#FF6B86]">
                             <span class="ms-2 text-xs">Ingat Saya</span>
                         </label>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-xs text-gray-500 hover:text-[#FF6B86] transition">Lupa Password?</a>
-                        @endif
+                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="text-xs text-gray-500 hover:text-[#FF6B86] transition">Lupa Password?</a>
                     </div>
 
                     <div class="pt-2">

@@ -59,10 +59,10 @@
                                 $colors = ['#FF6BD0', '#FF6B86', '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B'];
                             @endphp
 
-                            @forelse($formulaAramas as $index => $aroma)
+                            @forelse($formulaAroma as $index => $aroma)
                                 <div class="border-2 border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition bg-[#FCF3EE]/30 hover:border-[#FF6BD0]">
                                     <div class="flex items-center space-x-3 flex-1">
-                                        <input type="checkbox" name="formula_id[]" value="{{ $aroma->formula_id }}" 
+                                        <input type="checkbox" name="aroma_id[]" value="{{ $aroma->formula_id }}" 
                                             data-color="{{ $colors[$index % count($colors)] }}"
                                             class="aroma-checkbox rounded text-[#FF6B86] focus:ring-[#FF6B86] w-5 h-5">
                                         <div class="flex flex-col">
@@ -73,7 +73,7 @@
                                     
                                     <div class="flex items-center space-x-2 w-full sm:w-auto">
                                         <label class="text-xs font-bold text-gray-500 uppercase">Takaran:</label>
-                                        <input type="number" name="takaran[]" value="0" min="0" max="100" 
+                                        <input type="number" name="takaran[{{ $aroma->formula_id }}]" value="0" min="0" max="100" 
                                                class="takaran-input w-20 p-2 text-center rounded-lg border-2 border-gray-200 focus:border-[#FF6BD0] outline-none text-xs font-bold transition">
                                         <span class="text-xs font-bold text-gray-400">ml</span>
                                     </div>
@@ -142,7 +142,6 @@
             const bottleGlass = document.getElementById('bottle-glass');
             const bottleSizeLabel = document.getElementById('bottle-size-label');
 
-            // 1. Logika Perubahan Ukuran Tinggi Botol
             function updateBottleSize() {
                 const selectedSize = sizeSelect.value;
                 bottleGlass.classList.remove('h-36', 'h-44', 'h-52', 'h-60');
@@ -163,7 +162,6 @@
                 updateLiquid();
             }
 
-            // 2. Logika Pengisian Air Berdasarkan Jumlah Item yang Dicentang
             function updateLiquid() {
                 const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
                 const totalChecked = checkedBoxes.length;
@@ -172,7 +170,6 @@
                     liquidLayer.style.height = '0%';
                     liquidLayer.style.backgroundColor = 'transparent';
                 } else {
-                    // Air naik seiring bertambahnya aroma yang dicentang
                     const fillPercentage = Math.min(totalChecked * 25, 100);
                     liquidLayer.style.height = `${fillPercentage}%`;
 
@@ -181,11 +178,10 @@
                 }
             }
 
-            // Sinkronisasi input: Jika takaran diisi > 0, otomatis centang checkbox-nya, begitupun sebaliknya
             checkboxes.forEach((cb, i) => {
                 cb.addEventListener('change', function() {
                     if(!this.checked) takaranInputs[i].value = 0;
-                    if(this.checked && takaranInputs[i].value == 0) takaranInputs[i].value = 5; // Default isi 5ml jika dicentang
+                    if(this.checked && takaranInputs[i].value == 0) takaranInputs[i].value = 5; 
                     updateLiquid();
                 });
             });

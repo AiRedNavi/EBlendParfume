@@ -5,6 +5,8 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PesananCustom;
+use App\Http\Controllers\AdminPesananController;
 
 // 1. Halaman Landing Page Utama
 Route::get('/', function () {
@@ -30,11 +32,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
      * Hanya bisa diakses oleh user dengan role 'admin' atau 'pegawai'
      */
     Route::middleware(['role:admin,pegawai'])->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('dashboard_admin');
-        })->name('dashboard.admin');
-        
-        // Kamu bisa menambahkan rute manajemen stok parfum / pesanan masuk admin di sini nanti
+    // Menampilkan Dashboard Admin dengan Data Pesanan
+    Route::get('/admin/dashboard', [AdminPesananController::class, 'index'])->name('dashboard.admin');
+    
+        // Route Proses Mengubah Status Pesanan
+    Route::patch('/admin/pesanan/{pesanan_id}/status', [AdminPesananController::class, 'updateStatus'])->name('admin.pesanan.updateStatus');
+    Route::delete('/admin/pesanan/{pesanan_id}', [AdminPesananController::class, 'destroy'])->name('admin.pesanan.destroy');
     });
 
     /**
@@ -43,23 +46,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
      */
     Route::middleware(['role:pelanggan'])->group(function () {
         Route::get('/pelanggan/dashboard', function () {
-            return view('dashboard_pelanggan');
+            // PERBAIKAN: Ambil data pesanan kustom milik pelanggan yang sedang login saat ini
+            $pesanan_user = PesananCustom::where('user_id', Auth::id())
+                                        ->orderBy('created_at', 'desc')
+                                        ->get();
+
+            // Kirim variabel $pesanan_user ke file blade dashboard_pelanggan
+            return view('dashboard_pelanggan', compact('pesanan_user'));
         })->name('dashboard.pelanggan');
     });
 
     /**
      * FITUR TRANSAKSI & CUSTOM PARFUM
-     * Terbuka untuk semua user yang sudah login (atau bisa dipindah ke grup pelanggan jika hanya untuk pembeli)
+     * Terbuka untuk semua user yang sudah login
      */
     Route::get('/custom-parfum', [ParfumController::class, 'index'])->name('parfum.custom');
-    // Route untuk menyimpan hasil racikan (POST)
     Route::post('/custom-parfum', [ParfumController::class, 'store'])->name('parfum.store');
     Route::get('/pembayaran/{pesanan_id}', [PembayaranController::class, 'index'])->name('pembayaran.index');
     Route::post('/pembayaran/{pesanan_id}/proses', [PembayaranController::class, 'bayar'])->name('pembayaran.proses');
     
     /**
      * FITUR PENGATURAN PROFIL
-     * Diaktifkan kembali dengan aman di bawah middleware auth bawaan
      */
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
