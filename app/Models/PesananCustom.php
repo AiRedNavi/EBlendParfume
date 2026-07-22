@@ -10,11 +10,7 @@ class PesananCustom extends Model
     use HasFactory;
 
     protected $table = 'pesanan_custom';
-
-    // 1. Beritahu Laravel bahwa Primary Key Anda adalah pesanan_id, BUKAN 'id'
     protected $primaryKey = 'pesanan_id';
-
-    // 2. Beritahu Laravel bahwa Primary Key Anda berbentuk String (INV-xxxx), BUKAN Auto-Incrementing Integer
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -25,6 +21,21 @@ class PesananCustom extends Model
         'ukuran_botol_ml',
         'alkohol_ml',
         'total_harga',
-        'status_pesanan'
+        'status_pesanan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'pesanan_id', 'pesanan_id');
+    }
+
+    public function komposisiAroma()
+    {
+        return $this->hasMany(KomposisiAroma::class, 'pesanan_id', 'pesanan_id');
+    }
 }

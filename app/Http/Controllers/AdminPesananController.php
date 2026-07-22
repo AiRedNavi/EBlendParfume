@@ -4,23 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PesananCustom;
+use App\Models\User;
+use App\Models\FormulaAroma;
 
 class AdminPesananController extends Controller
 {
-    // Menampilkan semua pesanan dari semua pelanggan
+    // Menampilkan seluruh data dashboard admin (pesanan, customer, formula)
     public function index()
     {
-        // Mengambil semua pesanan, diurutkan dari yang paling baru
-        $semua_pesanan = PesananCustom::orderBy('created_at', 'desc')->get();
+        $semua_pesanan = PesananCustom::with(['user', 'pembayaran'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('dashboard_admin', compact('semua_pesanan'));
+        $semua_customer = User::where('role', 'pelanggan')
+            ->withCount('pesananCustom')
+            ->orderBy('nama')
+            ->get();
+
+        $semua_formula = FormulaAroma::orderBy('nama_formula')->get();
+
+        return view('dashboard_admin', compact('semua_pesanan', 'semua_customer', 'semua_formula'));
     }
 
-    // Mengubah status pesanan
     public function updateStatus(Request $request, $pesanan_id)
     {
         $request->validate([
-            // Sesuaikan opsi di bawah ini dengan isi ENUM database Anda
             'status_pesanan' => 'required|in:Menunggu Pembayaran,Pembayaran Dikirim,Pesanan Diproses,Pesanan Selesai,Dibatalkan'
         ]);
 
@@ -31,7 +39,7 @@ class AdminPesananController extends Controller
 
         return back()->with('success', 'Status pesanan ' . $pesanan_id . ' berhasil diperbarui!');
     }
-    // Menghapus pesanan secara permanen
+
     public function destroy($pesanan_id)
     {
         $pesanan = PesananCustom::findOrFail($pesanan_id);
@@ -39,4 +47,4 @@ class AdminPesananController extends Controller
 
         return back()->with('success', 'Pesanan dengan ID ' . $pesanan_id . ' berhasil dihapus permanen!');
     }
-    }
+}

@@ -66,7 +66,7 @@
                                             data-color="{{ $colors[$index % count($colors)] }}"
                                             class="aroma-checkbox rounded text-[#FF6B86] focus:ring-[#FF6B86] w-5 h-5">
                                         <div class="flex flex-col">
-                                            <span class="font-bold text-gray-900 text-sm">{{ $aroma->nama_aroma }}</span>
+                                            <span class="font-bold text-gray-900 text-sm">{{ $aroma->nama_formula }}</span>
                                             <span class="text-xs text-gray-400 mt-0.5">{{ $aroma->deskripsi ?? 'Aroma esens murni' }}</span>
                                         </div>
                                     </div>

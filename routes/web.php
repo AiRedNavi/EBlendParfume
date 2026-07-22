@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PesananCustom;
 use App\Http\Controllers\AdminPesananController;
+use App\Http\Controllers\AdminFormulaController;
 
 // 1. Halaman Landing Page Utama
 Route::get('/', function () {
@@ -34,7 +35,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:admin,pegawai'])->group(function () {
     // Menampilkan Dashboard Admin dengan Data Pesanan
     Route::get('/admin/dashboard', [AdminPesananController::class, 'index'])->name('dashboard.admin');
-    
+    // ... di dalam Route::middleware(['role:admin,pegawai'])->group(function () { ... }
+    Route::post('/admin/formula', [AdminFormulaController::class, 'store'])->name('admin.formula.store');
+    Route::patch('/admin/formula/{formula_id}', [AdminFormulaController::class, 'update'])->name('admin.formula.update');
+    Route::delete('/admin/formula/{formula_id}', [AdminFormulaController::class, 'destroy'])->name('admin.formula.destroy');
         // Route Proses Mengubah Status Pesanan
     Route::patch('/admin/pesanan/{pesanan_id}/status', [AdminPesananController::class, 'updateStatus'])->name('admin.pesanan.updateStatus');
     Route::delete('/admin/pesanan/{pesanan_id}', [AdminPesananController::class, 'destroy'])->name('admin.pesanan.destroy');

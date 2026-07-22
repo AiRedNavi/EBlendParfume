@@ -9,24 +9,18 @@ class Pembayaran extends Model
 {
     use HasFactory;
 
-    // Menentukan nama tabel jika tidak jamak (optional)
-    protected $table = 'pembayaran'; 
-    protected $primaryKey = 'pembayaran_id'; // Sesuaikan dengan nama PK di migrasi Anda
+    protected $table = 'pembayaran';
+    protected $primaryKey = 'pembayaran_id';
 
-    /**
-     * Kolom yang diizinkan untuk pengisian massal (Mass Assignment)
-     */
     protected $fillable = [
-        'pesanan_id',       // Kolom pemicu error yang wajib ditambahkan
-        'jumlah_bayar',     // Contoh kolom tambahan, sesuaikan dengan database Anda
-        'bukti_pembayaran', // Contoh kolom bukti transfer foto/pdf
-        'metode_bayar',
-        'status_pembayaran'
+        'pesanan_id',
+        'tanggal_bayar',
+        'metode_pembayaran',
+        'jumlah_bayar',
+        'bukti_pembayaran',
+        'status_pembayaran',
     ];
 
-    /**
-     * Relasi Balik ke Pesanan Custom
-     */
     public function pesananCustom()
     {
         return $this->belongsTo(PesananCustom::class, 'pesanan_id', 'pesanan_id');
