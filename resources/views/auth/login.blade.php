@@ -68,7 +68,7 @@
                             <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-[#FF6B86] focus:ring-[#FF6B86]">
                             <span class="ms-2 text-xs">Ingat Saya</span>
                         </label>
-                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="text-xs text-gray-500 hover:text-[#FF6B86] transition">Lupa Password?</a>
+                            <a href="https://wa.me/089635773887" class="text-xs text-gray-500 hover:text-[#FF6B86] transition">WhatsApp untuk Lupa Password</a>
                     </div>
 
                     <div class="pt-2">

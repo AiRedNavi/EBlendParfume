@@ -64,18 +64,24 @@
                                     <div class="flex items-center space-x-3 flex-1">
                                         <input type="checkbox" name="aroma_id[]" value="{{ $aroma->formula_id }}" 
                                             data-color="{{ $colors[$index % count($colors)] }}"
+                                            data-price="{{ $aroma->harga_per_ml }}"
                                             class="aroma-checkbox rounded text-[#FF6B86] focus:ring-[#FF6B86] w-5 h-5">
                                         <div class="flex flex-col">
                                             <span class="font-bold text-gray-900 text-sm">{{ $aroma->nama_formula }}</span>
                                             <span class="text-xs text-gray-400 mt-0.5">{{ $aroma->deskripsi ?? 'Aroma esens murni' }}</span>
+                                            <span class="text-xs font-bold text-[#FF6BD0] mt-0.5">Rp {{ number_format($aroma->harga_per_ml, 0, ',', '.') }} / ml</span>
                                         </div>
                                     </div>
                                     
-                                    <div class="flex items-center space-x-2 w-full sm:w-auto">
-                                        <label class="text-xs font-bold text-gray-500 uppercase">Takaran:</label>
-                                        <input type="number" name="takaran[{{ $aroma->formula_id }}]" value="0" min="0" max="100" 
-                                               class="takaran-input w-20 p-2 text-center rounded-lg border-2 border-gray-200 focus:border-[#FF6BD0] outline-none text-xs font-bold transition">
-                                        <span class="text-xs font-bold text-gray-400">ml</span>
+                                    <div class="flex flex-col items-end space-y-1 w-full sm:w-auto">
+                                        <div class="flex items-center space-x-2">
+                                            <label class="text-xs font-bold text-gray-500 uppercase">Takaran:</label>
+                                            <input type="number" name="takaran[{{ $aroma->formula_id }}]" value="0" min="0" max="100" 
+                                                   data-price="{{ $aroma->harga_per_ml }}"
+                                                   class="takaran-input w-20 p-2 text-center rounded-lg border-2 border-gray-200 focus:border-[#FF6BD0] outline-none text-xs font-bold transition">
+                                            <span class="text-xs font-bold text-gray-400">ml</span>
+                                        </div>
+                                        <span class="subtotal-label text-xs font-semibold text-gray-500">Subtotal: Rp 0</span>
                                     </div>
                                 </div>
                             @empty
@@ -94,6 +100,23 @@
                             <option value="100ml">Signature Size - 100 ml</option>
                             <option value="200ml">King Size - 200 ml</option>
                         </select>
+                    </div>
+
+                    {{-- Ringkasan Total Harga (live update) --}}
+                    <div class="bg-[#FCF3EE] border-2 border-pink rounded-xl p-4 space-y-1">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Subtotal Aroma:</span>
+                            <span id="subtotal-aroma">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Biaya Botol Kaca Eksklusif:</span>
+                            <span>Rp 15.000</span>
+                        </div>
+                        <hr class="border-gray-300 my-1">
+                        <div class="flex justify-between text-base font-extrabold text-black">
+                            <span>Estimasi Total:</span>
+                            <span id="total-harga" class="text-[#FF6BD0]">Rp 15.000</span>
+                        </div>
                     </div>
 
                     <div class="pt-2">
@@ -137,10 +160,19 @@
         document.addEventListener('DOMContentLoaded', function () {
             const checkboxes = document.querySelectorAll('.aroma-checkbox');
             const takaranInputs = document.querySelectorAll('.takaran-input');
+            const subtotalLabels = document.querySelectorAll('.subtotal-label');
             const liquidLayer = document.getElementById('liquid-layer');
             const sizeSelect = document.getElementById('size-select');
             const bottleGlass = document.getElementById('bottle-glass');
             const bottleSizeLabel = document.getElementById('bottle-size-label');
+            const subtotalAromaEl = document.getElementById('subtotal-aroma');
+            const totalHargaEl = document.getElementById('total-harga');
+
+            const BIAYA_BOTOL = 15000;
+
+            function formatRupiah(angka) {
+                return 'Rp ' + angka.toLocaleString('id-ID');
+            }
 
             function updateBottleSize() {
                 const selectedSize = sizeSelect.value;
@@ -178,11 +210,30 @@
                 }
             }
 
+            function updateTotalHarga() {
+                let subtotalAroma = 0;
+
+                takaranInputs.forEach((input, i) => {
+                    const takaran = parseFloat(input.value) || 0;
+                    const harga = parseFloat(input.getAttribute('data-price')) || 0;
+                    const isChecked = checkboxes[i].checked;
+                    const subtotalItem = isChecked ? takaran * harga : 0;
+
+                    subtotalLabels[i].textContent = 'Subtotal: ' + formatRupiah(subtotalItem);
+                    subtotalAroma += subtotalItem;
+                });
+
+                const total = subtotalAroma + BIAYA_BOTOL;
+                subtotalAromaEl.textContent = formatRupiah(subtotalAroma);
+                totalHargaEl.textContent = formatRupiah(total);
+            }
+
             checkboxes.forEach((cb, i) => {
                 cb.addEventListener('change', function() {
                     if(!this.checked) takaranInputs[i].value = 0;
                     if(this.checked && takaranInputs[i].value == 0) takaranInputs[i].value = 5; 
                     updateLiquid();
+                    updateTotalHarga();
                 });
             });
 
@@ -194,11 +245,13 @@
                         checkboxes[i].checked = false;
                     }
                     updateLiquid();
+                    updateTotalHarga();
                 });
             });
 
             sizeSelect.addEventListener('change', updateBottleSize);
             updateBottleSize();
+            updateTotalHarga();
         });
     </script>
 

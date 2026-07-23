@@ -79,7 +79,7 @@
                         <label for="password" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Password</label>
                         <input id="password" type="password" name="password" required autocomplete="new-password"
                                class="w-full mt-1.5 p-3 rounded-xl border-2 border-gray-200 focus:border-[#FF6BD0] outline-none text-sm font-semibold transition"
-                               placeholder="Minimal 8 karakter...">
+                               placeholder="Minimal 8 karakter, gunakan kombinasi huruf, angka, dan simbol...">
                         @if ($errors->has('password'))
                             <span class="mt-1 block font-bold text-xs text-red-500">{{ $errors->first('password') }}</span>
                         @endif

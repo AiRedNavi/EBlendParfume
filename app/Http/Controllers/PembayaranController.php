@@ -12,8 +12,9 @@ class PembayaranController extends Controller
     // Tampilkan Halaman Invoice & Form Upload Bukti
     public function index($pesanan_id)
     {
-        // Ambil data pesanan beserta relasi komposisi aromanya
-        $pesanan = PesananCustom::where('pesanan_id', $pesanan_id)
+        // Eager load komposisi aroma beserta detail formulanya (nama, harga per ml)
+        $pesanan = PesananCustom::with(['komposisiAroma.formulaAroma'])
+                                ->where('pesanan_id', $pesanan_id)
                                 ->where('user_id', Auth::user()->user_id)
                                 ->firstOrFail();
 
